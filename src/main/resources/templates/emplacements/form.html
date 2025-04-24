@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title th:text="${emplacement.id == null ? 'Nouvel Emplacement' : 'Modifier Emplacement'}">Formulaire Emplacement</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4" th:text="${emplacement.id == null ? 'Nouvel Emplacement' : 'Modifier Emplacement'}">Formulaire Emplacement</h2>
+                        
+                        <form th:action="@{/emplacements/save}" method="post" th:object="${emplacement}">
+                            <input type="hidden" th:field="*{id}">
+                            
+                            <div class="mb-3">
+                                <label for="nom" class="form-label">Nom</label>
+                                <input type="text" class="form-control" id="nom" th:field="*{nom}" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" id="description" th:field="*{description}" rows="3"></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="entrepot" class="form-label">Entrepôt</label>
+                                <select class="form-select" id="entrepot" th:field="*{entrepot.id}" required>
+                                    <option value="">Sélectionnez un entrepôt</option>
+                                    <option th:each="entrepot : ${entrepots}"
+                                            th:value="${entrepot.id}"
+                                            th:text="${entrepot.nom}"
+                                            th:selected="${emplacement.entrepot != null && emplacement.entrepot.id == entrepot.id}">
+                                    </option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="capacite" class="form-label">Capacité</label>
+                                <input type="number" class="form-control" id="capacite" th:field="*{capacite}" min="0" required>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-save btn-icon"></i>Enregistrer
+                                </button>
+                                <a href="/emplacements" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle btn-icon"></i>Annuler
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title th:text="${mouvement.id == null ? 'Nouveau Mouvement' : 'Modifier Mouvement'}">Formulaire Mouvement</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4" th:text="${mouvement.id == null ? 'Nouveau Mouvement' : 'Modifier Mouvement'}">Formulaire Mouvement</h2>
+                        
+                        <form th:action="@{/mouvements/save}" method="post" th:object="${mouvement}">
+                            <input type="hidden" th:field="*{id}">
+                            
+                            <div class="mb-3">
+                                <label for="produit" class="form-label">Produit</label>
+                                <select class="form-select" id="produit" th:field="*{produit.id}" required>
+                                    <option value="">Sélectionnez un produit</option>
+                                    <option th:each="produit : ${produits}"
+                                            th:value="${produit.id}"
+                                            th:text="${produit.nom}"
+                                            th:selected="${mouvement.produit != null && mouvement.produit.id == produit.id}">
+                                    </option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="type" class="form-label">Type</label>
+                                <select class="form-select" id="type" th:field="*{type}" required>
+                                    <option value="">Sélectionnez un type</option>
+                                    <option value="ENTREE">Entrée</option>
+                                    <option value="SORTIE">Sortie</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="quantite" class="form-label">Quantité</label>
+                                <input type="number" class="form-control" id="quantite" th:field="*{quantite}" min="1" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="emplacement" class="form-label">Emplacement</label>
+                                <select class="form-select" id="emplacement" th:field="*{emplacement.id}" required>
+                                    <option value="">Sélectionnez un emplacement</option>
+                                    <option th:each="emplacement : ${emplacements}"
+                                            th:value="${emplacement.id}"
+                                            th:text="${emplacement.nom}"
+                                            th:selected="${mouvement.emplacement != null && mouvement.emplacement.id == emplacement.id}">
+                                    </option>
+                                </select>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-save btn-icon"></i>Enregistrer
+                                </button>
+                                <a href="/mouvements" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle btn-icon"></i>Annuler
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

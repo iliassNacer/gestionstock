@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des Entrepôts</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Gestion de Stock</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/produits">Produits</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/mouvements">Mouvements</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/alertes">Alertes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/entrepots">Entrepôts</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Gestion des Entrepôts</h1>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ajouterEntrepotModal">
+                Ajouter un entrepôt
+            </button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Adresse</th>
+                        <th>Ville</th>
+                        <th>Code Postal</th>
+                        <th>Téléphone</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="entrepot : ${entrepots}">
+                        <td th:text="${entrepot.id}"></td>
+                        <td th:text="${entrepot.nom}"></td>
+                        <td th:text="${entrepot.adresse}"></td>
+                        <td th:text="${entrepot.ville}"></td>
+                        <td th:text="${entrepot.codePostal}"></td>
+                        <td th:text="${entrepot.telephone}"></td>
+                        <td th:text="${entrepot.email}"></td>
+                        <td>
+                            <button class="btn btn-sm btn-primary" th:data-id="${entrepot.id}" onclick="editerEntrepot(this)">
+                                Éditer
+                            </button>
+                            <button class="btn btn-sm btn-danger" th:data-id="${entrepot.id}" onclick="supprimerEntrepot(this)">
+                                Supprimer
+                            </button>
+                            <button class="btn btn-sm btn-info" th:data-id="${entrepot.id}" onclick="voirEmplacements(this)">
+                                Emplacements
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal Ajouter Entrepôt -->
+    <div class="modal fade" id="ajouterEntrepotModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ajouter un entrepôt</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="ajouterEntrepotForm">
+                        <div class="mb-3">
+                            <label class="form-label">Nom</label>
+                            <input type="text" class="form-control" name="nom" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Adresse</label>
+                            <input type="text" class="form-control" name="adresse" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Ville</label>
+                            <input type="text" class="form-control" name="ville" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Code Postal</label>
+                            <input type="text" class="form-control" name="codePostal" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Téléphone</label>
+                            <input type="tel" class="form-control" name="telephone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-primary" onclick="validerAjout()">Valider</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function editerEntrepot(button) {
+            const entrepotId = button.getAttribute('data-id');
+            // Logique pour éditer l'entrepôt
+            console.log('Éditer l\'entrepôt:', entrepotId);
+        }
+
+        function supprimerEntrepot(button) {
+            const entrepotId = button.getAttribute('data-id');
+            if (confirm('Êtes-vous sûr de vouloir supprimer cet entrepôt ?')) {
+                // Logique pour supprimer l'entrepôt
+                console.log('Supprimer l\'entrepôt:', entrepotId);
+            }
+        }
+
+        function voirEmplacements(button) {
+            const entrepotId = button.getAttribute('data-id');
+            window.location.href = '/emplacements?entrepotId=' + entrepotId;
+        }
+
+        function validerAjout() {
+            const form = document.getElementById('ajouterEntrepotForm');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            
+            fetch('/api/entrepots', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                location.reload();
+            })
+            .catch(error => console.error('Error:', error));
+            
+            const modal = bootstrap.Modal.getInstance(document.getElementById('ajouterEntrepotModal'));
+            modal.hide();
+        }
+    </script>
+</body>
+</html> 

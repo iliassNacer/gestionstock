@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title>Liste des Produits</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Liste des Produits</h2>
+            <a href="/produits/new" class="btn btn-primary">
+                <i class="bi bi-plus-circle btn-icon"></i>Nouveau Produit
+            </a>
+        </div>
+
+        <!-- Filtres de recherche -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form th:action="@{/produits}" method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="search" th:value="${param.search}" placeholder="Rechercher un produit...">
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" name="categorie">
+                            <option value="">Toutes les catégories</option>
+                            <option th:each="cat : ${categories}" 
+                                    th:value="${cat.id}" 
+                                    th:text="${cat.nom}"
+                                    th:selected="${param.categorie != null && param.categorie[0] == cat.id.toString()}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" name="stock">
+                            <option value="">Tous les stocks</option>
+                            <option value="alerte" th:selected="${param.stock != null && param.stock[0] == 'alerte'}">En alerte</option>
+                            <option value="critique" th:selected="${param.stock != null && param.stock[0] == 'critique'}">Stock critique</option>
+                            <option value="rupture" th:selected="${param.stock != null && param.stock[0] == 'rupture'}">En rupture</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-search btn-icon"></i>Rechercher
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Description</th>
+                        <th>Prix</th>
+                        <th>Quantité</th>
+                        <th>Seuil Min.</th>
+                        <th>Seuil Crit.</th>
+                        <th>Catégorie</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="produit : ${produits}" 
+                        th:classappend="${produit.quantite <= 0 ? 'table-danger' : (produit.quantite <= produit.seuilCritique ? 'table-warning' : '')}">
+                        <td th:text="${produit.id}"></td>
+                        <td th:text="${produit.nom}"></td>
+                        <td th:text="${produit.description}"></td>
+                        <td th:text="${#numbers.formatDecimal(produit.prix, 0, 'POINT', 2, 'COMMA')} + ' €'"></td>
+                        <td>
+                            <span th:text="${produit.quantite}" 
+                                  th:classappend="${produit.quantite <= 0 ? 'badge bg-danger' : (produit.quantite <= produit.seuilCritique ? 'badge bg-warning' : '')}">
+                            </span>
+                        </td>
+                        <td th:text="${produit.seuilMinimum}"></td>
+                        <td th:text="${produit.seuilCritique}"></td>
+                        <td th:text="${produit.categorie?.nom}"></td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a th:href="@{/produits/edit/{id}(id=${produit.id})}" class="btn btn-sm btn-warning" title="Modifier">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a th:href="@{/produits/view/{id}(id=${produit.id})}" class="btn btn-sm btn-info" title="Voir détails">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <form th:action="@{/produits/delete/{id}(id=${produit.id})}" method="post" style="display: inline;">
+                                    <button type="submit" class="btn btn-sm btn-danger" 
+                                            onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')"
+                                            title="Supprimer">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <div>
+                <span th:text="${'Affichage de ' + #lists.size(produits) + ' produits'}"></span>
+            </div>
+            <nav th:if="${totalPages > 1}">
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link" th:href="@{/produits(page=${currentPage - 1})}">Précédent</a>
+                    </li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                        th:classappend="${currentPage == i} ? 'active'">
+                        <a class="page-link" th:href="@{/produits(page=${i})}" th:text="${i + 1}"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                        <a class="page-link" th:href="@{/produits(page=${currentPage + 1})}">Suivant</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</body>
+</html> 

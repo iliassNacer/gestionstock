@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title th:text="${produit.id == null ? 'Nouveau Produit' : 'Modifier Produit'}">Formulaire Produit</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4" th:text="${produit.id == null ? 'Nouveau Produit' : 'Modifier Produit'}">Formulaire Produit</h2>
+                        
+                        <form th:action="@{/produits/save}" method="post" th:object="${produit}">
+                            <input type="hidden" th:field="*{id}">
+                            
+                            <div class="mb-3">
+                                <label for="nom" class="form-label">Nom</label>
+                                <input type="text" class="form-control" id="nom" th:field="*{nom}" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" id="description" th:field="*{description}" rows="3"></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="prix" class="form-label">Prix</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="prix" th:field="*{prix}" step="0.01" min="0" required>
+                                    <span class="input-group-text">€</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="quantite" class="form-label">Quantité</label>
+                                <input type="number" class="form-control" id="quantite" th:field="*{quantite}" min="0" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="seuilMinimum" class="form-label">Seuil Minimum</label>
+                                <input type="number" class="form-control" id="seuilMinimum" th:field="*{seuilMinimum}" min="0" required>
+                                <small class="form-text text-muted">Quantité minimale à maintenir en stock</small>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="seuilCritique" class="form-label">Seuil Critique</label>
+                                <input type="number" class="form-control" id="seuilCritique" th:field="*{seuilCritique}" min="0" required>
+                                <small class="form-text text-muted">Quantité en dessous de laquelle une alerte sera déclenchée</small>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="categorie" class="form-label">Catégorie</label>
+                                <select class="form-select" id="categorie" th:field="*{categorie.id}" required>
+                                    <option value="">Sélectionnez une catégorie</option>
+                                    <option th:each="categorie : ${categories}"
+                                            th:value="${categorie.id}"
+                                            th:text="${categorie.nom}"
+                                            th:selected="${produit.categorie != null && produit.categorie.id == categorie.id}">
+                                    </option>
+                                </select>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-save btn-icon"></i>Enregistrer
+                                </button>
+                                <a href="/produits" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle btn-icon"></i>Annuler
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

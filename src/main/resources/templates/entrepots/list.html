@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title>Liste des Entrepôts</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Liste des Entrepôts</h2>
+            <a href="/entrepots/new" class="btn btn-primary">
+                <i class="bi bi-plus-circle btn-icon"></i>Nouvel Entrepôt
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Adresse</th>
+                        <th>Capacité</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="entrepot : ${entrepots}">
+                        <td th:text="${entrepot.id}">ID</td>
+                        <td th:text="${entrepot.nom}">Nom</td>
+                        <td th:text="${entrepot.adresse}">Adresse</td>
+                        <td th:text="${entrepot.capacite}">Capacité</td>
+                        <td>
+                            <div class="btn-group">
+                                <a th:href="@{/entrepots/edit/{id}(id=${entrepot.id})}" class="btn btn-sm btn-warning">
+                                    <i class="bi bi-pencil btn-icon"></i>Modifier
+                                </a>
+                                <form th:action="@{/entrepots/delete/{id}(id=${entrepot.id})}" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet entrepôt ?')">
+                                        <i class="bi bi-trash btn-icon"></i>Supprimer
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html> 
